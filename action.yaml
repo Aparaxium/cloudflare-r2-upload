@@ -1,0 +1,46 @@
+name: "Cloudflare R2 Upload Action"
+description: "GitHub Action to upload files to a Cloudflare R2 bucket"
+inputs:
+  account_id:
+    description: "Your Cloudflare R2 account ID"
+    required: true
+  access_key_id:
+    description: "Your Cloudflare R2 access key"
+    required: true
+  secret_access_key:
+    description: "Your Cloudflare R2 secret access key"
+    required: true
+  bucket:
+    description: "The name of the bucket"
+    required: true
+  source_file:
+    description: "The source file"
+    required: true
+  destination_filepath:
+    description: "The destination filepath"
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21.5
+        cache: true
+    - name: install dependencies
+      shell: sh
+      run: go get .
+    - name: Build
+      shell: sh
+      run: go build -o main .
+    - name: Run
+      shell: sh
+      run: |
+        ./main \
+          "${{ inputs.account_id }}" \
+          "${{ inputs.access_key_id }}" \
+          "${{ inputs.secret_access_key }}" \
+          "${{ inputs.bucket }}" \
+          "${{ inputs.source_file }}" \
+          "${{ inputs.destination_filepath }}"

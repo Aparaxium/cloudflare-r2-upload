@@ -1,0 +1,16 @@
+name: Upload File Test
+run-name: ${{ github.actor }} ${{ github.event_name}} ${{ github.sha }}
+on: [push]
+jobs:
+  upload-to-cloudflare:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Upload to Cloudflare R2
+      uses: aparaxium/cloudflare-r2-upload@main
+      with: 
+        account_id: ${{ secrets.ACCOUNT_ID }}
+        access_key_id: ${{ secrets.ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.SECRET_ACCESS_KEY }}
+        bucket: ${{ secrets.BUCKET }}
+        source_file: tests/test1.txt
+        destination_filepath: test1.txt
